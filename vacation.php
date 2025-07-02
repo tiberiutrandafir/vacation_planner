@@ -28,6 +28,21 @@ function weekendOrHoliday (DateTime $date, array $holidays) {
     return($weekday == 0 || $weekday == 6 || in_array($fullDate, $holidays));
 }
 
+
+function bestVacationDays (int $year, array $holidays) {
+    $dates = allDays($year);
+    $dayTypes = [];
+    foreach($dates as $date) {
+        $fullDate = $date->format('Y-m-d');
+        $type = weekendOrHoliday($date, $holidays) ? 'free':'work';
+        $dayTypes[] = ['date' => $fullDate, 'type' => $type];
+    }
+
+    $proposedDays = [];
+    $allDays = count($dayTypes);
+
+}
+
 /**
  * some tests
  */
