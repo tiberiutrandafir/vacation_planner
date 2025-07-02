@@ -40,7 +40,16 @@ function bestVacationDays (int $year, array $holidays) {
 
     $proposedDays = [];
     $allDays = count($dayTypes);
+    for ($i = 0; $i <= $allDays; $i++) {
+        if ($dayTypes[$i]['type'] !== 'work') continue;
+        $score = 0;
 
+
+    }
+
+    echo "<pre>";
+    print_r($dayTypes);
+    echo "</pre>";
 }
 
 /**
