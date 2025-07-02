@@ -21,3 +21,9 @@ function allDays ($year) {
 //    echo"</pre>";
     return $dates;
 }
+
+function weekendOrHoliday (DateTime $date, array $holidays) {
+    $weekday = $date->format('w');
+    $fullDate = $date->format('Y-m-d');
+    return($weekday == 0 || $weekday == 6 || in_array($fullDate, $holidays));
+}
