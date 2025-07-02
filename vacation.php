@@ -27,3 +27,15 @@ function weekendOrHoliday (DateTime $date, array $holidays) {
     $fullDate = $date->format('Y-m-d');
     return($weekday == 0 || $weekday == 6 || in_array($fullDate, $holidays));
 }
+
+/**
+ * some tests
+ */
+
+//allDays(2025);
+
+// foreach(allDays(2025) as $day) {
+//     if (weekendOrHoliday($day, $holidays)) {
+//         echo $day->format('Y-m-d') . " is a weekend / holiday <br>";
+//     }
+// }
