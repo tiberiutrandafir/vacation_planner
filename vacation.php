@@ -7,59 +7,51 @@ $holidays = [
     '2025-12-25', '2025-12-26'
 ];
 
-function allDays ($year) {
+function allDays($year)
+{
     $dates = [];
     $start = new DateTime("{$year}-01-01");
     $end = new DateTime("{$year}-12-31");
     $current = clone $start;
-    while($current <= $end) {
+    while ($current <= $end) {
         $dates[] = clone $current;
         $current->modify("+1 day");
     }
-//    echo "<pre>";
-//    print_r($dates);
-//    echo"</pre>";
     return $dates;
 }
 
-function weekendOrHoliday (DateTime $date, array $holidays) {
+function weekendOrHoliday(DateTime $date, array $holidays)
+{
     $weekday = $date->format('w');
     $fullDate = $date->format('Y-m-d');
-    return($weekday == 0 || $weekday == 6 || in_array($fullDate, $holidays));
+    return ('0' === $weekday || '6' === $weekday || in_array($fullDate, $holidays));
 }
 
 
-function bestVacationDays (int $year, array $holidays) {
+function bestVacationDays(int $year, array $holidays)
+{
     $dates = allDays($year);
     $dayTypes = [];
-    foreach($dates as $date) {
+    foreach ($dates as $date) {
         $fullDate = $date->format('Y-m-d');
-        $type = weekendOrHoliday($date, $holidays) ? 'free':'work';
+        $type = weekendOrHoliday($date, $holidays) ? 'free' : 'work';
         $dayTypes[] = ['date' => $fullDate, 'type' => $type];
     }
 
     $proposedDays = [];
     $allDays = count($dayTypes);
-    for ($i = 0; $i <= $allDays; $i++) {
-        if ($dayTypes[$i]['type'] !== 'work') continue;
-        $score = 0;
-
-
+    for ($i = 0; $i < $allDays; $i++) {
+        // isset | array key exist | $dayTypes[$i]['type'] ?? 0
+        if (isset($dayTypes[$i]) && array_key_exists('type', $dayTypes[$i])) {
+            if ($dayTypes[$i]['type'] !== 'work') continue;
+            $score = 0;
+            if ($i > 0 && $dayTypes[$i - 1]['type'] === 'free') $score++;
+            if ($i < $allDays - 1 && $dayTypes[$i + 1]['type'] === 'free') $score++;
+            if ($i > 0 && in_array($dayTypes[$i - 1]['date'], $holidays) || $i < $allDays - 1 && in_array($dayTypes[$i + 1]['date'], $holidays)) $score++;
+            $proposedDays[] = ['score' => $score, 'date' => $dayTypes[$i]['date']];
+        }
     }
-
-    echo "<pre>";
-    print_r($dayTypes);
-    echo "</pre>";
+    usort($proposedDays, fn($a, $b) => $b['score'] <=> $a['score']);
 }
 
-/**
- * some tests
- */
-
-//allDays(2025);
-
-// foreach(allDays(2025) as $day) {
-//     if (weekendOrHoliday($day, $holidays)) {
-//         echo $day->format('Y-m-d') . " is a weekend / holiday <br>";
-//     }
-// }
+bestVacationDays(2025, $holidays);
