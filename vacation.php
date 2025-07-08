@@ -28,7 +28,7 @@ function weekendOrHoliday(DateTime $date, array $holidays)
 }
 
 
-function bestVacationDays(int $year, array $holidays)
+function bestVacationDays(int $year, array $holidays, int $vacationDaysAvailable)
 {
     $dates = allDays($year);
     $dayTypes = [];
@@ -47,11 +47,18 @@ function bestVacationDays(int $year, array $holidays)
             $score = 0;
             if ($i > 0 && $dayTypes[$i - 1]['type'] === 'free') $score++;
             if ($i < $allDays - 1 && $dayTypes[$i + 1]['type'] === 'free') $score++;
-            if ($i > 0 && in_array($dayTypes[$i - 1]['date'], $holidays) || $i < $allDays - 1 && in_array($dayTypes[$i + 1]['date'], $holidays)) $score++;
+            if ($i > 0 && in_array($dayTypes[$i - 1]['date'], $holidays) || $i < $allDays - 1 && in_array($dayTypes[$i + 1]['date'], $holidays)) $score += 2;
             $proposedDays[] = ['score' => $score, 'date' => $dayTypes[$i]['date']];
         }
     }
     usort($proposedDays, fn($a, $b) => $b['score'] <=> $a['score']);
+    $bestDays = array_slice(array_column($proposedDays, 'date'), 0, $vacationDaysAvailable);
+    return $bestDays;
 }
 
-bestVacationDays(2025, $holidays);
+$bestVacationDays = bestVacationDays(2025, $holidays, 25);
+
+echo "Best Vacation Days:\n";
+foreach ($bestVacationDays as $day) {
+    echo $day . "\n";
+}
