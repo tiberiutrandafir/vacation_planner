@@ -58,7 +58,7 @@ function bestVacationDays(int $year, array $holidays, int $vacationDaysAvailable
 
 $bestVacationDays = bestVacationDays(2025, $holidays, 25);
 
-echo "Best Vacation Days:\n";
-foreach ($bestVacationDays as $day) {
+sort($bestVacationDays);
+foreach($bestVacationDays as $day) {
     echo $day . "\n";
 }
