@@ -24,7 +24,14 @@ function weekendOrHoliday(DateTime $date, array $holidays)
 {
     $weekday = $date->format('w');
     $fullDate = $date->format('Y-m-d');
-    return ('0' === $weekday || '6' === $weekday || in_array($fullDate, $holidays));
+    if ('0' === $weekday || '6' === $weekday) {
+        $type = 'weekend';
+    } else if (in_array($fullDate, $holidays)) {
+        $type = 'free';
+    } else {
+        $type = 'work';
+    }
+    return ['date' => $fullDate, 'type' => $type];
 }
 
 
@@ -33,9 +40,7 @@ function bestVacationDays(int $year, array $holidays, int $vacationDaysAvailable
     $dates = allDays($year);
     $dayTypes = [];
     foreach ($dates as $date) {
-        $fullDate = $date->format('Y-m-d');
-        $type = weekendOrHoliday($date, $holidays) ? 'free' : 'work';
-        $dayTypes[] = ['date' => $fullDate, 'type' => $type];
+        $dayTypes[] = weekendOrHoliday($date, $holidays);
     }
 
     $proposedDays = [];
