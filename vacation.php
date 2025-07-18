@@ -50,9 +50,10 @@ function bestVacationDays(int $year, array $holidays, int $vacationDaysAvailable
         if (isset($dayTypes[$i]) && array_key_exists('type', $dayTypes[$i])) {
             if ($dayTypes[$i]['type'] !== 'work') continue;
             $score = 0;
-            if ($i > 0 && $dayTypes[$i - 1]['type'] === 'free') $score++;
-            if ($i < $allDays - 1 && $dayTypes[$i + 1]['type'] === 'free') $score++;
-            if ($i > 0 && in_array($dayTypes[$i - 1]['date'], $holidays) || $i < $allDays - 1 && in_array($dayTypes[$i + 1]['date'], $holidays)) $score += 2;
+            if ($i > 0 && $dayTypes[$i - 1]['type'] === 'weekend' || $i < $allDays - 1 && $dayTypes[$i + 1]['type'] === 'weekend') $score++;
+            for ($j = 1; $j <= 2; $j++) {
+                if ($i - $j > 0 && $dayTypes[$i - $j]['type'] === 'free' || $i + $j < $allDays - 1 && $dayTypes[$i + $j]['type'] === 'free') $score += 3;
+            }
             $proposedDays[] = ['score' => $score, 'date' => $dayTypes[$i]['date']];
         }
     }
